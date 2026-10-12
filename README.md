@@ -1,6 +1,6 @@
 # TPM — Task & Project Management (mini Jira / Trello)
 
-[![CI](https://github.com/YOUR-GITHUB-USER/tpm/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR-GITHUB-USER/tpm/actions/workflows/ci.yml)
+[![CI](https://github.com/ZIDAN44/tpm/actions/workflows/ci.yml/badge.svg)](https://github.com/ZIDAN44/tpm/actions/workflows/ci.yml)
 ![Java 27](https://img.shields.io/badge/Java-27-orange)
 ![Spring Boot 4.1](https://img.shields.io/badge/Spring%20Boot-4.1-6db33f)
 ![React 19](https://img.shields.io/badge/React-19-61dafb)
@@ -186,7 +186,7 @@ real **STOMP client** to assert the `TASK_CREATED` event is pushed after commit.
 3. **Frontend — [Vercel](https://vercel.com)**: import the repo, set **Root Directory = `frontend`** (framework: Vite).
    - In [`frontend/vercel.json`](frontend/vercel.json) replace `YOUR-BACKEND.onrender.com` with your Render host — this proxies `/api`, `/swagger-ui` and health checks so the refresh cookie is first-party.
    - Environment variable: `VITE_WS_URL=wss://YOUR-BACKEND.onrender.com/ws` (Vercel doesn't proxy WebSockets).
-   - Optional: `VITE_REPO_URL=https://github.com/you/tpm` to show a "Source" link.
+   - Optional: `VITE_REPO_URL=https://github.com/ZIDAN44/tpm` to show a "Source" link.
 4. **E-mail (optional)**: create a free SMTP account (Brevo, Resend, Mailjet…) and set on Render
    `MAIL_ENABLED=true SMTP_HOST SMTP_PORT=587 SMTP_USERNAME SMTP_PASSWORD SMTP_AUTH=true SMTP_STARTTLS=true MAIL_FROM`.
 
