@@ -5,6 +5,7 @@
     { "source": "/actuator/:path*", "destination": "https://tpm-backend-4j65.onrender.com/actuator/:path*" },
     { "source": "/swagger-ui", "destination": "https://tpm-backend-4j65.onrender.com/swagger-ui" },
     { "source": "/swagger-ui/:path*", "destination": "https://tpm-backend-4j65.onrender.com/swagger-ui/:path*" },
+    { "source": "/v3/api-docs", "destination": "https://tpm-backend-4j65.onrender.com/v3/api-docs" },
     { "source": "/v3/api-docs/:path*", "destination": "https://tpm-backend-4j65.onrender.com/v3/api-docs/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
