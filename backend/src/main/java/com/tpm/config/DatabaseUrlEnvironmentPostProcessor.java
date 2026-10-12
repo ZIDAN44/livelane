@@ -32,7 +32,7 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
         }
         var props = new LinkedHashMap<String, Object>();
         String jdbc = "jdbc:postgresql://" + uri.getHost() + ":" + (uri.getPort() == -1 ? 5432 : uri.getPort())
-                + uri.getRawPath() + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
+                + uri.getRawPath() + (uri.getRawQuery() == null ? "" : "?" + toJdbcQuery(uri.getRawQuery()));
         props.put("spring.datasource.url", jdbc);
         if (uri.getRawUserInfo() != null) {
             String[] parts = uri.getRawUserInfo().split(":", 2);
@@ -40,6 +40,11 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
             if (parts.length > 1) props.put("spring.datasource.password", decode(parts[1]));
         }
         return props;
+    }
+
+    /** libpq spells it {@code channel_binding} (Neon's strings include it); pgJDBC only knows {@code channelBinding}. */
+    private static String toJdbcQuery(String query) {
+        return query.replaceAll("(^|&)channel_binding=", "$1channelBinding=");
     }
 
     private static String decode(String value) {

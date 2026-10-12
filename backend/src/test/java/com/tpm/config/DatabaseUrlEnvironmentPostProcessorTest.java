@@ -32,6 +32,14 @@ class DatabaseUrlEnvironmentPostProcessorTest {
     }
 
     @Test
+    void translatesLibpqChannelBindingForPgJdbc() {
+        var props = DatabaseUrlEnvironmentPostProcessor.toDataSourceProperties(
+                "postgresql://u:p@ep-x-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require");
+        assertThat(props.get("spring.datasource.url")).isEqualTo(
+                "jdbc:postgresql://ep-x-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require&channelBinding=require");
+    }
+
+    @Test
     void explicitDbUrlWinsAndMissingUrlIsIgnored() {
         var env = new StandardEnvironment();
         env.getPropertySources().addFirst(new MapPropertySource("test",
