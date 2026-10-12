@@ -1,11 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://YOUR-BACKEND.onrender.com/api/:path*" },
-    { "source": "/actuator/:path*", "destination": "https://YOUR-BACKEND.onrender.com/actuator/:path*" },
-    { "source": "/swagger-ui", "destination": "https://YOUR-BACKEND.onrender.com/swagger-ui" },
-    { "source": "/swagger-ui/:path*", "destination": "https://YOUR-BACKEND.onrender.com/swagger-ui/:path*" },
-    { "source": "/v3/api-docs/:path*", "destination": "https://YOUR-BACKEND.onrender.com/v3/api-docs/:path*" },
+    { "source": "/api/:path*", "destination": "https://tpm-backend-4j65.onrender.com/api/:path*" },
+    { "source": "/actuator/:path*", "destination": "https://tpm-backend-4j65.onrender.com/actuator/:path*" },
+    { "source": "/swagger-ui", "destination": "https://tpm-backend-4j65.onrender.com/swagger-ui" },
+    { "source": "/swagger-ui/:path*", "destination": "https://tpm-backend-4j65.onrender.com/swagger-ui/:path*" },
+    { "source": "/v3/api-docs/:path*", "destination": "https://tpm-backend-4j65.onrender.com/v3/api-docs/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
