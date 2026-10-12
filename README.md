@@ -137,9 +137,9 @@ text blocks, `List.getFirst()`, and **virtual threads** (`spring.threads.virtual
 | Backend | Java 27, Spring Boot 4.1 (Web MVC, Security, OAuth2 Resource Server, Data JPA / Hibernate 7, Validation, WebSocket/STOMP, Mail, Cache, Actuator), Flyway, springdoc-openapi 3 |
 | Database | PostgreSQL 18 (Neon / Supabase in prod) |
 | Cache | Caffeine (default) or Redis (`CACHE_TYPE=redis`) |
-| Frontend | React 19, TypeScript 6, Vite 8, Tailwind CSS 4, TanStack Query 5, React Router 8, dnd-kit, STOMP.js |
+| Frontend | React 19, TypeScript 7 (native compiler), Vite 8, Tailwind CSS 4, TanStack Query 5, React Router 8, dnd-kit, STOMP.js |
 | Testing | JUnit 5, Mockito, AssertJ, Spring MockMvc, Testcontainers (Postgres), Vitest; JaCoCo coverage |
-| Ops | Docker (multi-stage, layered, non-root), docker-compose, GitHub Actions, Render + Vercel |
+| Ops | Docker (multi-stage, layered, non-root), docker-compose, GitHub Actions (SHA-pinned) + Dependabot, git hooks, Render + Vercel |
 
 ## Run it locally
 
@@ -151,7 +151,7 @@ docker compose up --build
 
 - App: http://localhost:3000 · Swagger: http://localhost:3000/swagger-ui · Caught e-mails (Mailpit): http://localhost:8025
 
-**Option B — dev mode** (JDK 27, Node 24):
+**Option B — dev mode** (JDK 27, Node 26):
 
 ```bash
 docker compose up -d postgres mailpit
@@ -256,6 +256,22 @@ frontend/                    React SPA (Vite)
   src/pages/     Login, Dashboard, Project (board/list/activity/settings), Admin, Profile
 docker-compose.yml · render.yaml · .github/workflows/ci.yml
 ```
+
+## Contributing & git workflow
+
+```bash
+git config core.hooksPath .githooks   # once per clone
+```
+
+| Hook | What it does |
+|---|---|
+| `commit-msg` | Enforces [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `type(scope): summary`, header ≤ 72 chars |
+| `pre-commit` | Staged files only: blocks `.env`/key files, obvious secrets, conflict markers, files > 1 MB; lints staged frontend code |
+| `pre-push` | Runs frontend typecheck + tests and backend unit/web tests for the parts you changed (CI runs everything) |
+
+Commits are small and atomic (one logical change, each one builds), written in the imperative mood.
+Guidance for AI coding agents lives in [AGENTS.md](AGENTS.md) (with nested [backend](backend/AGENTS.md) /
+[frontend](frontend/AGENTS.md) files); [CLAUDE.md](CLAUDE.md) imports it.
 
 ## Known limitations / next steps
 
