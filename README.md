@@ -9,7 +9,7 @@
 A real-time Kanban project-management app: projects, boards with drag & drop, task assignment, comments,
 deadlines, e-mail + in-app notifications, an audit log, and **live board updates over WebSockets**.
 
-**🔗 Live demo:** https://tpm-zidan44.vercel.app  ·  **📘 API docs (Swagger):** https://tpm-zidan44.vercel.app/swagger-ui  ·  **⚙️ API:** https://tpm-backend-4j65.onrender.com
+**🔗 Live demo:** https://livelane-app.vercel.app  ·  **📘 API docs (Swagger):** https://livelane-app.vercel.app/swagger-ui  ·  **⚙️ API:** https://tpm-backend-4j65.onrender.com
 
 > **Log in instantly** — the login page has one-click demo accounts (password `Demo@1234` for all):
 >
