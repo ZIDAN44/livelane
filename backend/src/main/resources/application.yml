@@ -97,6 +97,11 @@ app:
     reset-cron: ${DEMO_RESET_CRON:-}
   reminders:
     cron: ${REMINDER_CRON:0 */15 * * * *}
+  keep-alive:
+    # Self-ping for hosts that sleep when idle (Render free). Render sets RENDER_EXTERNAL_URL automatically.
+    enabled: ${KEEP_ALIVE_ENABLED:false}
+    url: ${KEEP_ALIVE_URL:${RENDER_EXTERNAL_URL:}}
+    interval: ${KEEP_ALIVE_INTERVAL:PT10M}
 
 logging:
   level:
