@@ -18,6 +18,9 @@
 		<!-- Newer Byte Buddy so Hibernate proxies / Mockito understand Java 27 class files -->
 		<byte-buddy.version>1.18.14</byte-buddy.version>
 		<springdoc.version>3.1.1</springdoc.version>
+		<!-- Override of the Boot-managed driver for CVE-2026-107314 / CVE-2026-107315 (patch release). -->
+		<postgresql.version>42.7.14</postgresql.version>
+		<!-- Flyway intentionally stays on the Boot-managed 12.x: Boot 4.1 is not tested against Flyway 13. -->
 	</properties>
 	<dependencies>
 		<dependency>
@@ -125,6 +128,23 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-toolchain</id>
+						<goals><goal>enforce</goal></goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion><version>[3.9,)</version></requireMavenVersion>
+								<requireJavaVersion><version>[27,)</version></requireJavaVersion>
+								<dependencyConvergence/>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
