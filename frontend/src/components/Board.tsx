@@ -16,10 +16,10 @@ import { CSS } from '@dnd-kit/utilities'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { CheckCircle2, MessageSquare, Plus } from 'lucide-react'
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 import { api, errorMessage } from '../lib/api'
-import { afterTaskIdFor, upsertTask } from '../lib/board'
+import { afterTaskIdFor, matchesFilter, upsertTask, type BoardFilter } from '../lib/board'
 import { keyBetween } from '../lib/fractional'
 import type { BoardView, ColumnView, TaskDetail, TaskSummary } from '../lib/types'
 import { Avatar, DueBadge, PriorityBadge, Spinner } from './ui'
@@ -187,20 +187,6 @@ function Column({
   )
 }
 
-export interface BoardFilter {
-  q: string
-  assigneeId: number | 'none' | null
-  priority: string | null
-}
-
-export function matchesFilter(t: TaskSummary, f: BoardFilter) {
-  if (f.q && !`${t.key} ${t.title}`.toLowerCase().includes(f.q.toLowerCase())) return false
-  if (f.assigneeId === 'none' && t.assignee) return false
-  if (typeof f.assigneeId === 'number' && t.assignee?.id !== f.assigneeId) return false
-  if (f.priority && t.priority !== f.priority) return false
-  return true
-}
-
 export default function Board({
   board,
   canEdit,
@@ -222,14 +208,12 @@ export default function Board({
     () => Object.fromEntries(board.columns.map((c) => [colKey(c.id), c.tasks.filter((t) => matchesFilter(t, filter))])),
     [board, filter],
   )
-  const [columns, setColumns] = useState<Columns>(fromBoard)
+  // Local ordering exists only while a card is being dragged; otherwise the board renders straight
+  // from the query cache, so server and realtime updates show up without any state syncing.
+  const [dragColumns, setDragColumns] = useState<Columns | null>(null)
+  const columns = dragColumns ?? fromBoard
   const [active, setActive] = useState<TaskSummary | null>(null)
   const [origin, setOrigin] = useState<string | null>(null)
-
-  // Server/realtime updates flow in whenever we're not mid-drag.
-  useEffect(() => {
-    if (!active) setColumns(fromBoard)
-  }, [fromBoard, active])
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -255,6 +239,7 @@ export default function Board({
     const id = String(active.id)
     const container = findContainer(id)
     setOrigin(container ?? null)
+    setDragColumns(fromBoard)
     setActive(container ? (columns[container].find((t) => String(t.id) === id) ?? null) : null)
   }
 
@@ -264,7 +249,8 @@ export default function Board({
     const from = findContainer(String(active.id))
     const to = findContainer(String(over.id))
     if (!from || !to || from === to) return
-    setColumns((prev) => {
+    setDragColumns((current) => {
+      const prev = current ?? fromBoard
       const moving = prev[from].find((t) => String(t.id) === String(active.id))
       if (!moving) return prev
       const target = prev[to]
@@ -282,7 +268,8 @@ export default function Board({
     const dragged = active ? String(active.id) : null
     const task = activeTaskRef(columns, dragged)
     setActive(null)
-    if (!over || !dragged || !task) return setColumns(fromBoard)
+    setDragColumns(null) // from here on the (optimistically updated) cache is the source of truth
+    if (!over || !dragged || !task) return
 
     const container = findContainer(dragged)!
     let list = columns[container]
@@ -290,7 +277,6 @@ export default function Board({
     const overIndex = list.findIndex((t) => String(t.id) === String(over.id))
     const newIndex = overIndex >= 0 ? overIndex : list.length - 1
     if (oldIndex !== newIndex) list = arrayMove(list, oldIndex, newIndex)
-    setColumns((prev) => ({ ...prev, [container]: list }))
 
     const columnId = Number(container.slice(4))
     const index = list.findIndex((t) => String(t.id) === dragged)
@@ -325,7 +311,7 @@ export default function Board({
       onDragEnd={onDragEnd}
       onDragCancel={() => {
         setActive(null)
-        setColumns(fromBoard)
+        setDragColumns(null)
       }}
     >
       <div className="scroll-thin flex h-full gap-3 overflow-x-auto px-4 pb-4">

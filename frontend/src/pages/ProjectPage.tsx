@@ -4,14 +4,14 @@ import { Activity, ArrowDown, ArrowUp, Kanban, List, Plus, Search, Settings, X }
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
-import Board, { type BoardFilter } from '../components/Board'
+import Board from '../components/Board'
 import NewTaskModal from '../components/NewTaskModal'
 import ProjectSettings from '../components/ProjectSettings'
 import TaskModal from '../components/TaskModal'
 import { Avatar, DueBadge, EmptyState, PageSpinner, Pagination, PriorityBadge } from '../components/ui'
 import { ApiError, api, errorMessage, qs } from '../lib/api'
 import { useAuth } from '../lib/auth'
-import { applyEvent } from '../lib/board'
+import { applyEvent, type BoardFilter } from '../lib/board'
 import { PRIORITIES, ROLE_LABEL, timeAgo, titleCase } from '../lib/format'
 import { useSubscription } from '../lib/realtime'
 import { atLeast, type ActivityView, type BoardEvent, type BoardView, type Page, type TaskSummary, type UserSummary } from '../lib/types'
@@ -103,9 +103,13 @@ function ListTab({ board, onOpenTask }: { board: BoardView; onOpenTask: (id: num
   const [columnId, setColumnId] = useState('')
   const [overdue, setOverdue] = useState(false)
   const [sort, setSort] = useState<{ key: SortKey; dir: 'asc' | 'desc' }>({ key: 'createdAt', dir: 'desc' })
-  const [page, setPage] = useState(0)
   const debouncedQ = useDebounced(q)
-  useEffect(() => setPage(0), [debouncedQ, priority, assigneeId, columnId, overdue, sort])
+  // The page belongs to one particular filter combination; changing any filter starts again at page 0
+  // (derived during render instead of resetting state in an effect).
+  const filterKey = JSON.stringify([debouncedQ, priority, assigneeId, columnId, overdue, sort])
+  const [paging, setPaging] = useState({ filterKey, page: 0 })
+  const page = paging.filterKey === filterKey ? paging.page : 0
+  const setPage = (p: number) => setPaging({ filterKey, page: p })
 
   const params = qs({ q: debouncedQ, priority, assigneeId, columnId, overdue: overdue || undefined, page, size: 15, sort: `${sort.key},${sort.dir}` })
   const tasks = useQuery({

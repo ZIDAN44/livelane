@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ArrowDown, ArrowUp, CheckCircle2, Crown, LogOut, Trash2, UserPlus } from 'lucide-react'
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { useState, type FormEvent, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { api, errorMessage } from '../lib/api'
@@ -32,15 +32,12 @@ function useAction(projectId: number) {
   })
 }
 
+/** Keyed by the column's saved values, so a server/realtime change remounts it with fresh inputs. */
 function ColumnRow({ column, index, total, board, canManage }: { column: ColumnView; index: number; total: number; board: BoardView; canManage: boolean }) {
   const projectId = board.project.id
   const action = useAction(projectId)
   const [name, setName] = useState(column.name)
   const [wip, setWip] = useState(column.wipLimit?.toString() ?? '')
-  useEffect(() => {
-    setName(column.name)
-    setWip(column.wipLimit?.toString() ?? '')
-  }, [column.name, column.wipLimit])
   const dirty = name !== column.name || wip !== (column.wipLimit?.toString() ?? '')
 
   const save = (done = column.doneColumn) =>
@@ -150,7 +147,7 @@ export default function ProjectSettings({ board }: { board: BoardView }) {
 
       <Section title="Board columns" description="Order, WIP limits (max tasks in progress) and which column means “done”.">
         <div className="divide-y divide-line">
-          {board.columns.map((c, i) => <ColumnRow key={c.id} column={c} index={i} total={board.columns.length} board={board} canManage={canManage} />)}
+          {board.columns.map((c, i) => <ColumnRow key={`${c.id}:${c.name}:${c.wipLimit}`} column={c} index={i} total={board.columns.length} board={board} canManage={canManage} />)}
         </div>
         {canManage && (
           <form onSubmit={addColumn} className="mt-3 flex gap-2">

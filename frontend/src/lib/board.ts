@@ -71,3 +71,18 @@ export function applyEvent(board: BoardView, event: BoardEvent): BoardView | nul
 export function afterTaskIdFor(tasksWithoutDragged: TaskSummary[], index: number): number | null {
   return index <= 0 ? null : (tasksWithoutDragged[index - 1]?.id ?? null)
 }
+
+/** Client-side board filter (search box, assignee and priority selects). */
+export interface BoardFilter {
+  q: string
+  assigneeId: number | 'none' | null
+  priority: string | null
+}
+
+export function matchesFilter(t: TaskSummary, f: BoardFilter) {
+  if (f.q && !`${t.key} ${t.title}`.toLowerCase().includes(f.q.toLowerCase())) return false
+  if (f.assigneeId === 'none' && t.assignee) return false
+  if (typeof f.assigneeId === 'number' && t.assignee?.id !== f.assigneeId) return false
+  if (f.priority && t.priority !== f.priority) return false
+  return true
+}

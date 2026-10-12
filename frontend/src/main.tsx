@@ -5,8 +5,8 @@ import { BrowserRouter } from 'react-router'
 import { Toaster } from 'sonner'
 import App from './App'
 import { ApiError } from './lib/api'
-import { AuthProvider } from './lib/auth'
-import { RealtimeProvider } from './lib/realtime'
+import { AuthProvider } from './lib/AuthProvider'
+import { RealtimeProvider } from './lib/RealtimeProvider'
 import './index.css'
 
 const queryClient = new QueryClient({

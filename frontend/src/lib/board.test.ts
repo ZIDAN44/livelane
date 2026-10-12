@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { afterTaskIdFor, applyEvent, compareTasks, upsertTask } from './board'
+import { afterTaskIdFor, applyEvent, compareTasks, matchesFilter, upsertTask } from './board'
 import type { BoardView, TaskSummary } from './types'
 
 const task = (id: number, columnId: number, position: string, version = 0): TaskSummary => ({
@@ -55,5 +55,17 @@ describe('board state', () => {
     expect(afterTaskIdFor(list, 0)).toBeNull()
     expect(afterTaskIdFor(list, 1)).toBe(1)
     expect(afterTaskIdFor(list, 2)).toBe(2)
+  })
+
+  it('filters cards by text, assignee and priority', () => {
+    const t = { ...task(1, 1, 'V'), title: 'Fix login bug', priority: 'HIGH' as const }
+    const none = { q: '', assigneeId: null, priority: null }
+    expect(matchesFilter(t, none)).toBe(true)
+    expect(matchesFilter(t, { ...none, q: 'LOGIN' })).toBe(true)
+    expect(matchesFilter(t, { ...none, q: 't-1' })).toBe(true) // matches the task key too
+    expect(matchesFilter(t, { ...none, q: 'signup' })).toBe(false)
+    expect(matchesFilter(t, { ...none, assigneeId: 'none' })).toBe(true)
+    expect(matchesFilter(t, { ...none, assigneeId: 7 })).toBe(false)
+    expect(matchesFilter(t, { ...none, priority: 'LOW' })).toBe(false)
   })
 })

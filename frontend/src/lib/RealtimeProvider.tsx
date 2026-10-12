@@ -1,7 +1,8 @@
 import { Client, type StompSubscription } from '@stomp/stompjs'
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { API_URL, getAccessToken } from './api'
 import { useAuth } from './auth'
+import { RealtimeContext, type Handler } from './realtime'
 
 /** WebSocket URL: explicit VITE_WS_URL, else derived from the API URL or the current origin. */
 function wsUrl(): string {
@@ -10,16 +11,6 @@ function wsUrl(): string {
   const base = API_URL || window.location.origin
   return base.replace(/^http/, 'ws') + '/ws'
 }
-
-type Handler = (body: unknown) => void
-
-interface Realtime {
-  connected: boolean
-  /** Subscribes (and transparently re-subscribes after reconnects). Returns an unsubscribe fn. */
-  subscribe: (destination: string, handler: Handler) => () => void
-}
-
-const RealtimeContext = createContext<Realtime | null>(null)
 
 /**
  * One STOMP connection per signed-in user. The JWT goes in the CONNECT frame (browsers can't set
@@ -75,23 +66,4 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(() => ({ connected, subscribe }), [connected, subscribe])
   return <RealtimeContext.Provider value={value}>{children}</RealtimeContext.Provider>
-}
-
-export function useRealtime() {
-  const ctx = useContext(RealtimeContext)
-  if (!ctx) throw new Error('useRealtime must be used inside <RealtimeProvider>')
-  return ctx
-}
-
-/** Subscribe to a destination for the lifetime of the component. */
-export function useSubscription(destination: string | null, handler: Handler) {
-  const { subscribe } = useRealtime()
-  const handlerRef = useRef(handler)
-  useEffect(() => {
-    handlerRef.current = handler
-  })
-  useEffect(() => {
-    if (!destination) return
-    return subscribe(destination, (body) => handlerRef.current(body))
-  }, [destination, subscribe])
 }

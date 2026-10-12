@@ -15,7 +15,8 @@ npm run build
 
 ## Layout
 
-- `src/lib/` — framework-free logic: `api.ts` (fetch wrapper, token refresh), `auth.tsx`, `realtime.tsx` (STOMP),
+- `src/lib/` — framework-free logic: `api.ts` (fetch wrapper, token refresh), `auth.ts` + `AuthProvider.tsx`,
+  `realtime.ts` + `RealtimeProvider.tsx` (STOMP; hooks and providers live in separate files for Fast Refresh),
   `board.ts` (pure reducers for board state, unit-tested), `fractional.ts`, `types.ts` (mirrors backend DTOs).
 - `src/components/` — `Board.tsx` (dnd-kit), `TaskModal.tsx`, `ProjectSettings.tsx`, `ui.tsx` (shared primitives).
 - `src/pages/` — route components.
@@ -31,4 +32,5 @@ npm run build
   `btn-*`, `input`, `card`). Support light and dark — no hard-coded colours without a `dark:` variant.
 - `verbatimModuleSyntax` is on: use `import type` for type-only imports.
 - Keep components accessible: labels for inputs, `aria-label` on icon buttons, keyboard-operable dialogs.
-- Put pure logic in `src/lib` with a `*.test.ts` next to it.
+- Put pure logic in `src/lib` with a `*.test.ts` next to it. Component files export components only.
+- Don't mirror props/query data into state with `useEffect`; derive it during render or reset via `key`.
