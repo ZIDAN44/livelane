@@ -1,0 +1,55 @@
+# Full local stack:   docker compose up --build        -> http://localhost:3000
+# Infra only (dev):   docker compose up -d postgres mailpit
+#   then run the backend with ./mvnw spring-boot:run and the frontend with npm run dev.
+name: tpm
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: tpm
+      POSTGRES_USER: tpm
+      POSTGRES_PASSWORD: tpm
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tpm -d tpm"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Optional distributed cache (set CACHE_TYPE=redis on the backend to use it).
+  redis:
+    image: redis:8-alpine
+    ports: ["6379:6379"]
+    profiles: [redis]
+
+  # Catches all outgoing e-mail. Web UI: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    ports: ["8025:8025", "1025:1025"]
+
+  backend:
+    build: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/tpm
+      DB_USERNAME: tpm
+      DB_PASSWORD: tpm
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      MAIL_ENABLED: "true"
+      FRONTEND_URL: http://localhost:3000
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:5173
+      JWT_SECRET: ${JWT_SECRET:-bG9jYWwtZG9ja2VyLWNvbXBvc2Utc2VjcmV0LWNoYW5nZS1tZS0wMTIzNDU2Nzg5}
+    ports: ["8080:8080"]
+
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    ports: ["3000:80"]
+
+volumes:
+  pgdata:
