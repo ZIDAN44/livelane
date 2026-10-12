@@ -52,10 +52,10 @@ public class EmailService {
         var url = props.frontendUrl() + (link == null ? "" : link);
         return """
                 <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:520px;margin:auto;padding:24px">
-                  <div style="font-weight:700;font-size:18px;color:#4f46e5;margin-bottom:16px">TPM</div>
+                  <div style="font-weight:700;font-size:18px;color:#4f46e5;margin-bottom:16px">LiveLane</div>
                   <p style="font-size:15px;color:#111827;line-height:1.5">%s</p>
                   <a href="%s" style="display:inline-block;margin-top:12px;padding:10px 16px;background:#4f46e5;color:#fff;
-                     border-radius:8px;text-decoration:none;font-size:14px">Open in TPM</a>
+                     border-radius:8px;text-decoration:none;font-size:14px">Open in LiveLane</a>
                   <p style="font-size:12px;color:#6b7280;margin-top:24px">
                     You can turn off e-mail notifications in your profile settings.</p>
                 </div>

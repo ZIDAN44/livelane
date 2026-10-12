@@ -17,7 +17,7 @@ public class OpenApiConfig {
     OpenAPI tpmOpenApi() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("TPM - Task & Project Management API")
+                        .title("LiveLane API")
                         .version("1.0")
                         .description("""
                                 Mini Jira/Trello: projects, Kanban boards, tasks, comments, deadlines and notifications.

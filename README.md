@@ -1,4 +1,4 @@
-# TPM — Task & Project Management (mini Jira / Trello)
+# LiveLane — real-time Kanban project manager
 
 [![CI](https://github.com/ZIDAN44/livelane/actions/workflows/ci.yml/badge.svg)](https://github.com/ZIDAN44/livelane/actions/workflows/ci.yml)
 ![Java 27](https://img.shields.io/badge/Java-27-orange)

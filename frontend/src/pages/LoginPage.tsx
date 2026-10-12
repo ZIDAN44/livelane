@@ -36,7 +36,7 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
     <div className="grid min-h-full lg:grid-cols-2">
       <div className="relative hidden overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 p-12 text-white lg:flex lg:flex-col">
         <div className="flex items-center gap-2 text-lg font-bold">
-          <img src="/favicon.svg" alt="" className="size-8 rounded-lg ring-2 ring-white/30" /> TPM
+          <img src="/favicon.svg" alt="" className="size-8 rounded-lg ring-2 ring-white/30" /> LiveLane
         </div>
         <div className="my-auto max-w-md">
           <h1 className="text-4xl font-bold leading-tight">Plan, track and ship together — in real time.</h1>

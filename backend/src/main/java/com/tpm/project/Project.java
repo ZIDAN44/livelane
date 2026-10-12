@@ -24,7 +24,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Short uppercase key used to build human-friendly task ids, e.g. "TPM-42". */
+    /** Short uppercase key used to build human-friendly task ids, e.g. "WEB-42". */
     @Column(name = "project_key", nullable = false, unique = true)
     private String key;
 

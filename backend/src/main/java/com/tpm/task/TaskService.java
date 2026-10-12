@@ -76,7 +76,7 @@ public class TaskService {
     @Transactional
     public TaskDetail create(Long projectId, CreateTaskRequest req) {
         access.require(projectId, ProjectRole.MEMBER);
-        // Lock the project row: serialises the per-project task counter (TPM-1, TPM-2, ...).
+        // Lock the project row: serialises the per-project task counter (WEB-1, WEB-2, ...).
         var project = projects.findByIdForUpdate(projectId).orElseThrow(() -> new NotFoundException("Project", projectId));
         var columnId = req.columnId() != null ? req.columnId()
                 : columns.findFirstByProjectIdAndDoneColumnFalseOrderByPositionAsc(projectId)

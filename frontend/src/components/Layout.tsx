@@ -15,7 +15,7 @@ export function Logo() {
   return (
     <Link to="/" className="flex items-center gap-2 font-bold tracking-tight">
       <img src="/favicon.svg" alt="" className="size-7" />
-      <span>TPM</span>
+      <span>LiveLane</span>
     </Link>
   )
 }

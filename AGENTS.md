@@ -6,7 +6,7 @@ Subprojects have their own, more specific files — the closest `AGENTS.md` to t
 
 ## Project overview
 
-TPM is a real-time Kanban task & project manager (mini Jira/Trello).
+LiveLane (formerly TPM, still the package and database name) is a real-time Kanban task & project manager (mini Jira/Trello).
 
 | Part | Stack | Path |
 |---|---|---|

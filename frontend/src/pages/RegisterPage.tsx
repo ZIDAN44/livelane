@@ -21,7 +21,7 @@ export default function RegisterPage() {
     setErrors({})
     try {
       await register(form.fullName, form.email, form.password)
-      toast.success('Welcome to TPM! Create your first project to get started.')
+      toast.success('Welcome to LiveLane! Create your first project to get started.')
       navigate('/')
     } catch (err) {
       if (err instanceof ApiError && err.errors) setErrors(err.errors)

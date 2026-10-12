@@ -86,7 +86,7 @@ app:
     same-site: ${COOKIE_SAME_SITE:Lax}
   mail:
     enabled: ${MAIL_ENABLED:false}
-    from: ${MAIL_FROM:TPM <no-reply@tpm.local>}
+    from: ${MAIL_FROM:LiveLane <no-reply@livelane.local>}
   rate-limit:
     capacity: ${RATE_LIMIT_CAPACITY:10}
     refill-per-minute: ${RATE_LIMIT_REFILL:10}

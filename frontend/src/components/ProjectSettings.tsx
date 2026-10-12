@@ -215,7 +215,7 @@ export default function ProjectSettings({ board }: { board: BoardView }) {
             <button className="btn-primary" disabled={action.isPending}>
               {action.isPending ? <Spinner /> : <UserPlus className="size-4" />} Add
             </button>
-            <p className="w-full text-xs text-muted">The person must already have a TPM account (try carol@demo.tpm or bob@demo.tpm).</p>
+            <p className="w-full text-xs text-muted">The person must already have a LiveLane account (try carol@demo.tpm or bob@demo.tpm).</p>
           </form>
         )}
       </Section>

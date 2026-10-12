@@ -39,7 +39,7 @@ public class Task {
     @JoinColumn(name = "column_id")
     private BoardColumn column;
 
-    /** Sequential number within the project (TPM-1, TPM-2, ...). */
+    /** Sequential number within the project (WEB-1, WEB-2, ...). */
     @Column(nullable = false, updatable = false)
     private int number;
 
