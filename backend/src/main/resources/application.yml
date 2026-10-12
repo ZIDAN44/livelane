@@ -7,6 +7,11 @@ spring:
     password: ${DB_PASSWORD:tpm}
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:5}
+      minimum-idle: ${DB_POOL_MIN_IDLE:1}
+      # HikariCP 6.2.1+ pings idle connections every 2 min by default, which keeps a scale-to-zero Postgres
+      # (Neon) awake forever. Disabled: connections are validated on checkout instead, so the first query
+      # after the database suspended just reconnects.
+      keepalive-time: ${DB_KEEPALIVE_TIME:0}
   jpa:
     open-in-view: false
     hibernate:
