@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+/* Dark mode is class-based so users can toggle it (initial value follows the OS). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Semantic color tokens -> utilities like bg-surface, text-muted, border-line. */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-column: var(--column);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-brand-fg: var(--brand-fg);
+  --color-brand-soft: var(--brand-soft);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warn: var(--warn);
+}
+
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --surface-2: #f3f4f8;
+  --column: #eef0f6;
+  --line: #e3e5ee;
+  --fg: #151826;
+  --muted: #646a82;
+  --brand: #4f46e5;
+  --brand-fg: #ffffff;
+  --brand-soft: #eef0ff;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --warn: #d97706;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0d0f17;
+  --surface: #161a26;
+  --surface-2: #1d2232;
+  --column: #121622;
+  --line: #2a3043;
+  --fg: #e8eaf3;
+  --muted: #9198b0;
+  --brand: #818cf8;
+  --brand-fg: #0d0f17;
+  --brand-soft: #232848;
+  --danger: #f87171;
+  --success: #4ade80;
+  --warn: #fbbf24;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-bg text-fg antialiased;
+  font-family: var(--font-sans);
+}
+
+/* Shared component classes (Tailwind v4 custom utilities, composable with @apply) */
+@utility btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition
+      disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2
+      focus-visible:outline-brand;
+  }
+
+@utility btn-primary {
+    @apply btn bg-brand text-brand-fg hover:opacity-90;
+  }
+
+@utility btn-ghost {
+    @apply btn text-fg hover:bg-surface-2;
+  }
+
+@utility btn-outline {
+    @apply btn border border-line bg-surface text-fg hover:bg-surface-2;
+  }
+
+@utility btn-danger {
+    @apply btn bg-danger text-white hover:opacity-90;
+  }
+
+@utility input {
+    @apply w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg placeholder:text-muted
+      focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20;
+  }
+
+@utility label {
+    @apply mb-1 block text-xs font-medium text-muted;
+  }
+
+@utility card {
+    @apply rounded-xl border border-line bg-surface;
+  }
+
+/* Thin scrollbars for board columns */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
