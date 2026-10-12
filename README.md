@@ -1,6 +1,6 @@
 # TPM — Task & Project Management (mini Jira / Trello)
 
-[![CI](https://github.com/ZIDAN44/tpm/actions/workflows/ci.yml/badge.svg)](https://github.com/ZIDAN44/tpm/actions/workflows/ci.yml)
+[![CI](https://github.com/ZIDAN44/livelane/actions/workflows/ci.yml/badge.svg)](https://github.com/ZIDAN44/livelane/actions/workflows/ci.yml)
 ![Java 27](https://img.shields.io/badge/Java-27-orange)
 ![Spring Boot 4.1](https://img.shields.io/badge/Spring%20Boot-4.1-6db33f)
 ![React 19](https://img.shields.io/badge/React-19-61dafb)
