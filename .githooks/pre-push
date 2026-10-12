@@ -1,0 +1,22 @@
+#!/bin/sh
+# Runs the test suites for the parts of the repo that changed in the pushed commits.
+# Skip with: git push --no-verify   (CI runs everything anyway)
+zero=0000000000000000000000000000000000000000
+changed=""
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue                      # branch deletion
+  if [ "$remote_sha" = "$zero" ]; then range="$local_sha"; else range="$remote_sha..$local_sha"; fi
+  changed="$changed
+$(git log --name-only --pretty=format: $range)"
+done
+
+if printf '%s\n' "$changed" | grep -q '^frontend/'; then
+  echo "▶ pre-push: frontend typecheck + tests"
+  (cd frontend && npm run -s typecheck && npm test --silent) || { echo "✖ frontend checks failed" >&2; exit 1; }
+fi
+if printf '%s\n' "$changed" | grep -q '^backend/'; then
+  echo "▶ pre-push: backend unit + web tests (integration tests run in CI)"
+  (cd backend && ./mvnw -q -B test -Dtest='!BoardIntegrationTest' -Dsurefire.failIfNoSpecifiedTests=false) \
+    || { echo "✖ backend tests failed" >&2; exit 1; }
+fi
+exit 0

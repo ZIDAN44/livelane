@@ -1,0 +1,41 @@
+#!/bin/sh
+# Fast checks on what is being committed (staged files only). Full test suites run in pre-push and CI.
+# Skip in an emergency with: git commit --no-verify
+fail=0
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -z "$staged" ] && exit 0
+
+# 1. Never commit env files or private keys.
+for f in $staged; do
+  case "$f" in
+    *.env|.env|*/.env|.env.*|*/.env.*)
+      case "$f" in *.env.example|*/.env.example) ;; *) echo "✖ pre-commit: refusing to commit env file: $f" >&2; fail=1 ;; esac ;;
+    *.pem|*.key|*.p12|*.jks) echo "✖ pre-commit: refusing to commit key material: $f" >&2; fail=1 ;;
+  esac
+done
+
+# 2. Obvious secrets and leftover conflict markers in added lines.
+added=$(git diff --cached -U0 --diff-filter=ACMR -- . ':(exclude)*.lock' ':(exclude)*package-lock.json' | grep '^+' | grep -v '^+++')
+if printf '%s\n' "$added" | grep -Eq -- '-----BEGIN [A-Z ]*PRIVATE KEY-----|AKIA[0-9A-Z]{16}|ghp_[0-9A-Za-z]{36}|xox[baprs]-[0-9A-Za-z-]{10,}|sk_live_[0-9A-Za-z]{20,}'; then
+  echo "✖ pre-commit: staged changes look like they contain a secret/token." >&2; fail=1
+fi
+if printf '%s\n' "$added" | grep -Eq '^\+(<<<<<<<|>>>>>>>)( |$)'; then
+  echo "✖ pre-commit: merge conflict markers found." >&2; fail=1
+fi
+
+# 3. Large files (> 1 MB) don't belong in git.
+for f in $staged; do
+  if [ -f "$f" ]; then
+    size=$(wc -c < "$f" | tr -d ' ')
+    if [ "$size" -gt 1048576 ]; then echo "✖ pre-commit: $f is $((size / 1024)) KB (> 1 MB)." >&2; fail=1; fi
+  fi
+done
+
+# 4. Lint staged frontend sources (oxlint is fast enough to run on every commit).
+fe=$(printf '%s\n' $staged | grep -E '^frontend/src/.*\.(ts|tsx)$' | sed 's#^frontend/##')
+if [ -n "$fe" ] && [ -x frontend/node_modules/.bin/oxlint ]; then
+  (cd frontend && ./node_modules/.bin/oxlint $fe) >/dev/null 2>&1 || {
+    echo "✖ pre-commit: oxlint reported errors (cd frontend && npx oxlint)." >&2; fail=1; }
+fi
+
+exit $fail

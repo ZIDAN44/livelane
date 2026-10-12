@@ -1,0 +1,33 @@
+#!/bin/sh
+# Enforces Conventional Commits 1.0.0: <type>(<scope>)!: <description>
+# https://www.conventionalcommits.org/en/v1.0.0/
+msg_file="$1"
+header=$(sed -n '/^[^#]/{p;q;}' "$msg_file")
+
+# Let git-generated messages through.
+case "$header" in
+  Merge\ *|Revert\ *|fixup!\ *|squash!\ *|amend!\ *) exit 0 ;;
+esac
+
+types='feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert'
+if ! printf '%s\n' "$header" | grep -Eq "^($types)(\([a-z0-9._/-]+\))?!?: [^ ].*$"; then
+  echo "✖ commit-msg: header must follow Conventional Commits:" >&2
+  echo "    <type>(<scope>)!: <description>" >&2
+  echo "    types: ${types}" >&2
+  echo "    e.g.   feat(board): add WIP limit indicator" >&2
+  echo "  got: $header" >&2
+  exit 1
+fi
+
+if [ "${#header}" -gt 72 ]; then
+  echo "✖ commit-msg: header is ${#header} chars; keep it at 72 or fewer." >&2
+  exit 1
+fi
+
+# Body (if any) must be separated from the header by a blank line.
+second=$(sed -n '2p' "$msg_file")
+if [ -n "$second" ] && [ "${second#\#}" = "$second" ]; then
+  echo "✖ commit-msg: leave a blank line between the header and the body." >&2
+  exit 1
+fi
+exit 0
