@@ -1,0 +1,29 @@
+# Render Blueprint: New > Blueprint > pick this repo. Database: create a free Neon/Supabase Postgres
+# and fill DB_URL / DB_USERNAME / DB_PASSWORD when prompted.
+services:
+  - type: web
+    name: tpm-backend
+    runtime: docker
+    rootDir: backend
+    plan: free
+    region: frankfurt
+    healthCheckPath: /actuator/health/readiness
+    envVars:
+      - key: DB_URL
+        sync: false # e.g. jdbc:postgresql://ep-xxx.eu-central-1.aws.neon.tech/neondb?sslmode=require
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true # random base64 256-bit key
+      - key: FRONTEND_URL
+        sync: false # e.g. https://tpm-demo.vercel.app
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false # e.g. https://tpm-demo.vercel.app,https://*.vercel.app
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: DEMO_RESET_CRON
+        value: "0 0 3 * * *" # wipe & re-seed the public demo nightly
+      - key: MAIL_ENABLED
+        value: "false" # set true + SMTP_* (e.g. Brevo / Resend SMTP) to send real e-mail
