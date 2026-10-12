@@ -16,9 +16,7 @@ services:
     runtime: docker
     plan: free
     region: singapore
-    rootDir: backend
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    rootDir: backend # Dockerfile and build context resolve relative to rootDir
     healthCheckPath: /actuator/health/readiness
     envVars:
       - key: DATABASE_URL
