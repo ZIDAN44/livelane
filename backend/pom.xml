@@ -17,7 +17,7 @@
 		<java.version>27</java.version>
 		<!-- Newer Byte Buddy so Hibernate proxies / Mockito understand Java 27 class files -->
 		<byte-buddy.version>1.18.14</byte-buddy.version>
-		<springdoc.version>3.1.1</springdoc.version>
+		<springdoc.version>3.2.0</springdoc.version>
 		<!-- Override of the Boot-managed driver for CVE-2026-107314 / CVE-2026-107315 (patch release). -->
 		<postgresql.version>42.7.14</postgresql.version>
 		<!-- Flyway intentionally stays on the Boot-managed 12.x: Boot 4.1 is not tested against Flyway 13. -->
